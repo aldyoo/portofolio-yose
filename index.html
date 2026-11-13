@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Mencegah Imgur/Postimages memblokir gambar akibat header Referer dari GitHub Pages -->
+    <meta name="referrer" content="no-referrer">
     <title>PORTOFOLIO YOSE | Visual Artist</title>
     
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://i.imgur.com" crossorigin>
+    <link rel="preconnect" href="https://i.postimg.cc" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
@@ -37,17 +41,26 @@
 
     <!-- Custom CSS untuk styling tambahan (Swiper & Scrollbar) -->
     <style>
-        html, body {
+        html {
             max-width: 100%;
-            overflow-x: hidden;
         }
 
         body {
-            /* === TAMPILAN GRADASI (AKTIF) === */
-            background: linear-gradient(135deg, #000000 0%, #0a0103 40%, #2a0410 100%);
-            background-attachment: fixed; /* Latar belakang terkunci saat di-scroll */
-
+            max-width: 100%;
+            overflow-x: clip;
+            background-color: #050505;
             color: #f3f4f6;
+        }
+
+        /* Layer background fixed berbasis GPU agar scroll ponsel mulus tanpa repaint berat */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -20;
+            pointer-events: none;
+            background: linear-gradient(135deg, #000000 0%, #0a0103 40%, #2a0410 100%);
+            transform: translateZ(0);
         }
 
         /* Modifikasi warna titik navigasi Swiper */
@@ -75,23 +88,25 @@
             background: #050505;
         }
         ::-webkit-scrollbar-thumb {
-            background: #333;
+            background: #3f0d1c;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: #6b142e;
         }
 
-        /* Image hover effect */
+        /* Image hover effect tanpa mengganggu transform milik Swiper */
         .img-container {
             overflow: hidden;
             border-radius: 1rem;
         }
         .img-container img {
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .img-container:hover img {
-            transform: scale(1.05);
+        @media (hover: hover) {
+            .img-container:hover img {
+                transform: scale(1.05);
+            }
         }
 
         /* Lightbox Overlay Styles */
@@ -116,25 +131,25 @@
             </div>
 
             <!-- Mobile Menu Button -->
-            <button class="md:hidden text-white focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <button class="md:hidden text-white focus:outline-none" aria-label="Menu" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
         </div>
 
         <!-- Mobile Menu (Hidden by default) -->
         <div id="mobile-menu" class="hidden md:hidden bg-[#0a0103] border-b border-white/10 px-6 py-4 space-y-4 text-sm font-medium tracking-wide">
-            <a href="#home" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Home</a>
-            <a href="#design" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Design</a>
-            <a href="#photography" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Photography</a>
-            <a href="#contact" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Contact</a>
+            <a href="#home" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Beranda</a>
+            <a href="#design" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Desain</a>
+            <a href="#photography" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Fotografi</a>
+            <a href="#contact" class="block hover:text-gray-400" onclick="document.getElementById('mobile-menu').classList.add('hidden')">Kontak</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <header id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-rose-900/10 rounded-full blur-[120px] -z-10"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[75vw] max-w-[700px] max-h-[700px] rounded-full pointer-events-none -z-10" style="background: radial-gradient(circle, rgba(136, 19, 55, 0.16) 0%, rgba(136, 19, 55, 0) 70%);"></div>
         
-        <div class="text-center px-6" data-aos="fade-up" data-aos-duration="1500">
+        <div class="text-center px-6" data-aos="fade-up" data-aos-duration="1000">
             <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-rose-300">Menyusun Bingkai & Cerita</span>
             </h1>
@@ -150,15 +165,15 @@
     </header>
 
     <!-- Tentang Saya & Alat Section -->
-    <section id="about" class="py-24 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+    <section id="about" class="py-24 border-t border-white/5 bg-[#070102]/75">
         <div class="max-w-6xl mx-auto px-6 lg:px-12">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 
                 <div class="lg:col-span-5" data-aos="fade-right">
                     <div class="relative group">
-                        <div class="absolute -inset-2 bg-gradient-to-r from-rose-900 to-black rounded-2xl blur-lg opacity-30 group-hover:opacity-70 transition duration-500"></div>
+                        <div class="absolute -inset-2 bg-gradient-to-r from-rose-900 to-black rounded-2xl blur-md opacity-30 group-hover:opacity-70 transition duration-500"></div>
                         <div class="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-900 border border-white/10">
-                            <img src="https://i.imgur.com/WV8QV1f.jpg" alt="Yose Renaldy Sinaga" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                            <img src="https://i.imgur.com/WV8QV1f.jpg" alt="Yose Renaldy Sinaga" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-6">
                                 <div>
                                     <h3 class="text-lg font-semibold text-white">Yose Renaldy Sinaga</h3>
@@ -184,19 +199,19 @@
                         <h4 class="text-sm font-semibold tracking-wider uppercase text-rose-300 mb-4">Perangkat & Keahlian Utama</h4>
                         
                         <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200 backdrop-blur-md">
+                            <div class="flex items-center space-x-2 bg-white/[0.06] border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200">
                                 <span class="w-2 h-2 rounded-full bg-blue-500"></span>
                                 <span>Canva</span>
                             </div>
-                            <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200 backdrop-blur-md">
+                            <div class="flex items-center space-x-2 bg-white/[0.06] border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200">
                                 <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
                                 <span>Adobe Lightroom</span>
                             </div>
-                            <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200 backdrop-blur-md">
+                            <div class="flex items-center space-x-2 bg-white/[0.06] border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200">
                                 <span class="w-2 h-2 rounded-full bg-pink-500"></span>
                                 <span>Figma</span>
                             </div>
-                            <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200 backdrop-blur-md">
+                            <div class="flex items-center space-x-2 bg-white/[0.06] border border-white/10 px-4 py-2 rounded-full text-xs font-medium text-gray-200">
                                 <span class="w-2 h-2 rounded-full bg-green-500"></span>
                                 <span>CapCut / Editing</span>
                             </div>
@@ -222,7 +237,7 @@
                     <!-- Slide 1 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.postimg.cc/YSGxTBW6/ducor-(1).png', 'Aku Dalam Kanvas', 'Sebuah eksplorasi visual mendalam yang merefleksikan identitas diri dan perjalanan emosional seorang kreator. Dibuat menggunakan teknik digital painting dengan kombinasi palet warna gelap dan kontras dramatis untuk menyampaikan pesan introspeksi.')">
-                            <img src="https://i.postimg.cc/YSGxTBW6/ducor-(1).png" alt="Desain 1" class="w-full h-full object-cover">
+                            <img src="https://i.postimg.cc/YSGxTBW6/ducor-(1).png" alt="Desain 1" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Aku Dalam Kanvas</h3>
@@ -234,7 +249,7 @@
                     <!-- Slide 2 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/j2l9kcE.jpg', 'Perayaan Hari Besar Nasional', 'Refleksi perjuangan dan semangat kemerdekaan pemuda Indonesia. Proyek ini dirancang dengan pendekatan tipografi modern dan elemen grafis simbolik untuk membangkitkan rasa nasionalisme dan kebanggaan historis.')">
-                            <img src="https://i.imgur.com/j2l9kcE.jpg" alt="Desain 2" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/j2l9kcE.jpg" alt="Desain 2" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Perayaan Hari Besar Nasional</h3>
@@ -243,10 +258,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 3 (Diperbaiki) -->
+                    <!-- Slide 3 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/DRrxptA.jpg', 'Peringatan Hari Pahlawan', 'Karya visual khusus untuk memperingati Hari Pahlawan, dirancang untuk menghubungkan nilai historis perjuangan masa lalu dengan estetika generasi masa kini. Menggunakan perpaduan tipografi tegas, elemen siluet berkarakter, dan palet warna merah-putih yang dramatis guna menggemakan kembali semangat pengorbanan serta keberanian para pahlawan bangsa dalam medium digital yang modern.')">
-                            <img src="https://i.imgur.com/DRrxptA.jpg" alt="Desain 3" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/DRrxptA.jpg" alt="Desain 3" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Peringatan Hari Pahlawan</h3>
@@ -255,10 +270,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 7 -->
+                    <!-- Slide 4 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/lLlJ6pd.jpg', 'Random Design', 'Eksplorasi estetika bebas tanpa batasan kaku, menguji komposisi ruang negatif, eksperimen tekstur digital, dan ritme visual untuk menemukan bentuk ekspresi baru di luar zona nyaman.')">
-                            <img src="https://i.imgur.com/lLlJ6pd.jpg" alt="Desain 7" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/lLlJ6pd.jpg" alt="Desain 4" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Desain Acak</h3>
@@ -267,10 +282,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 3 (Monokrom) -->
+                    <!-- Slide 5 (Monokrom) -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/ZED8l0w.jpg', 'B&W Design', 'Desain kolaboratif kelompok yang mengusung tema monokromatik klasik. Fokus utama pada ketajaman kontras hitam-putih untuk menonjolkan esensi kesatuan, profesionalisme, dan ketegasan visual tim.')">
-                            <img src="https://i.imgur.com/ZED8l0w.jpg" alt="Desain 3" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/ZED8l0w.jpg" alt="Desain 5" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Desain Monokrom</h3>
@@ -279,10 +294,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 4 -->
+                    <!-- Slide 6 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/nsQ5O19.jpg', 'Minimalism Concept', 'Penerapan prinsip less is more. Desain monokrom minimalis ini dirancang untuk memaksimalkan pesan melalui kesederhanaan bentuk, ruang kosong yang lapang, serta pemilihan tipografi yang bersih.')">
-                            <img src="https://i.imgur.com/nsQ5O19.jpg" alt="Desain 4" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/nsQ5O19.jpg" alt="Desain 6" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Konsep Minimalis</h3>
@@ -291,10 +306,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 8 -->
+                    <!-- Slide 7 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/uoVpbXI.jpg', 'Structural Cover', 'Desain sampul publikasi pembagian divisi struktural. Menggabungkan grid layout yang teratur dan hierarki visual yang jelas guna memudahkan audiens memahami struktur organisasi secara cepat dan elegan.')">
-                            <img src="https://i.imgur.com/uoVpbXI.jpg" alt="Desain 8" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/uoVpbXI.jpg" alt="Desain 7" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Sampul Struktural</h3>
@@ -303,10 +318,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 5 -->
+                    <!-- Slide 8 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/3VfC0Kf.jpg', 'Committee Structure', 'Konsep tata letak kepengurusan komite dengan pendekatan visual monokromatik. Menyeimbangkan kerapian informasi formal dengan sentuhan estetika modern yang tidak kaku.')">
-                            <img src="https://i.imgur.com/3VfC0Kf.jpg" alt="Desain 5" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/3VfC0Kf.jpg" alt="Desain 8" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Struktural</h3>
@@ -315,10 +330,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Slide 6 -->
+                    <!-- Slide 9 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/EVWXiCU.jpg', 'Committee Structure', 'Variasi desain struktur kepengurusan dengan pendekatan yang lebih hangat, ceria, dan dinamis. Menggunakan palet warna yang ramah dan tata letak interaktif untuk menciptakan kesan kolaboratif yang akrab.')">
-                            <img src="https://i.imgur.com/EVWXiCU.jpg" alt="Desain 6" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/EVWXiCU.jpg" alt="Desain 9" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-xl font-semibold">Struktural</h3>
@@ -347,7 +362,7 @@
                     <!-- Slide 1 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/kTqaRbx.jpg', 'Nature\'s Breath', 'Menangkap keindahan detail mikrokosmos alam. Difoto dengan teknik close-up makro untuk menonjolkan tekstur kelopak bunga dan harmoni warna natural yang menenangkan jiwa.')">
-                            <img src="https://i.imgur.com/kTqaRbx.jpg" alt="Foto 1" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/kTqaRbx.jpg" alt="Foto 1" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Alam & Nafasnya</h3>
@@ -359,7 +374,7 @@
                     <!-- Slide 2 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/mPfzFMl.jpg', 'Nature\'s Breath', 'Eksplorasi visual pada keindahan tersembunyi flora kecil di sekitar kita. Pencahayaan alami (natural lighting) dimanfaatkan untuk menciptakan kedalaman ruang dan menonjolkan detail organik yang sering terlewatkan.')">
-                            <img src="https://i.imgur.com/mPfzFMl.jpg" alt="Foto 2" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/mPfzFMl.jpg" alt="Foto 2" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Alam & Nafasnya</h3>
@@ -371,7 +386,7 @@
                     <!-- Slide 3 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/wyqgW9n.jpg', 'Cityscapes', 'Potret lanskap arsitektur perkotaan yang menangkap megahnya struktur bangunan modern. Menggunakan sudut pandang simetris dan perspektif garis untuk menonjolkan skala megah serta dinamika kota.')">
-                            <img src="https://i.imgur.com/wyqgW9n.jpg" alt="Foto 3" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/wyqgW9n.jpg" alt="Foto 3" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Cityscapes</h3>
@@ -383,7 +398,7 @@
                     <!-- Slide 4 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/aOsCGLh.jpg', 'B&W Style', 'Sesi fotografi potret kelompok dengan sentuhan warna hitam-putih sinematik. Pendekatan monokrom dipilih untuk meredam distraksi warna dan memperkuat karakter ekspresi serta kedekatan antar individu.')">
-                            <img src="https://i.imgur.com/aOsCGLh.jpg" alt="Foto 4" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/aOsCGLh.jpg" alt="Foto 4" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">B&W Style</h3>
@@ -395,7 +410,7 @@
                     <!-- Slide 5 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/9PNSpcu.jpg', 'B&W Style', 'Studi karakter wajah melalui fotografi potret hitam-putih yang intim. Kontras cahaya yang tajam (chiaroscuro) digunakan untuk memahat fitur wajah dan menyampaikan emosi yang jujur serta mendalam.')">
-                            <img src="https://i.imgur.com/9PNSpcu.jpg" alt="Foto 5" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/9PNSpcu.jpg" alt="Foto 5" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">B&W Style</h3>
@@ -407,7 +422,7 @@
                     <!-- Slide 6 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/kfHGS7e.jpg', 'Dramatic Style', 'Sesi foto kelompok dengan arahan artistik bernuansa dramatis dan misterius. Pengaturan pencahayaan yang terarah menciptakan atmosfer sinematik layaknya adegan di dalam film layar lebar.')">
-                            <img src="https://i.imgur.com/kfHGS7e.jpg" alt="Foto 6" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/kfHGS7e.jpg" alt="Foto 6" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Dramatic Style</h3>
@@ -419,7 +434,7 @@
                     <!-- Slide 7 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/6JGUMKO.jpg', 'Mafia Style', 'Konsep fotografi tematik bergaya kasual gelap (mafia-inspired aesthetic). Menonjolkan pose berkarakter kuat, busana serba hitam, serta suasana yang tegas, elegan, dan penuh wibawa.')">
-                            <img src="https://i.imgur.com/6JGUMKO.jpg" alt="Foto 7" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/6JGUMKO.jpg" alt="Foto 7" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Mafia Style</h3>
@@ -431,7 +446,7 @@
                     <!-- Slide 8 -->
                     <div class="swiper-slide group cursor-zoom-in active:cursor-grabbing">
                         <div class="img-container relative aspect-[4/5] bg-gray-900" onclick="openLightbox('https://i.imgur.com/Xu0pCve.jpg', 'Vintage Style', 'Eksplorasi fotografi benda sehari-hari dengan sentuhan estetika vintage dan tone warna hangat. Menghadirkan kembali memori nostalgia melalui tekstur objek yang autentik.')">
-                            <img src="https://i.imgur.com/Xu0pCve.jpg" alt="Foto 8" class="w-full h-full object-cover">
+                            <img src="https://i.imgur.com/Xu0pCve.jpg" alt="Foto 8" referrerpolicy="no-referrer" decoding="async" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 pointer-events-none">
                                 <div>
                                     <h3 class="text-lg font-semibold">Vintage Style</h3>
@@ -458,7 +473,7 @@
         <div id="lightbox-wrapper" class="min-h-full w-full flex flex-col items-center justify-center px-4 py-16 sm:p-8">
             <!-- Lightbox Image Container -->
             <div class="w-full max-w-3xl flex items-center justify-center mb-5">
-                <img id="lightbox-img" src="" alt="Lightbox Zoom" class="w-auto h-auto max-w-full max-h-[50vh] sm:max-h-[60vh] object-contain rounded-xl shadow-2xl">
+                <img id="lightbox-img" src="" alt="Lightbox Zoom" referrerpolicy="no-referrer" class="w-auto h-auto max-w-full max-h-[50vh] sm:max-h-[60vh] object-contain rounded-xl shadow-2xl">
             </div>
 
             <!-- Lightbox Caption (Expanded Narration) -->
@@ -475,7 +490,7 @@
             <h2 class="text-3xl md:text-5xl font-bold mb-6">Mari Berkolaborasi.</h2>
             <p class="text-gray-400 mb-10 font-light">Punya proyek menarik atau sekadar ingin menyapa? Jangan ragu untuk menghubungi saya.</p>
             
-            <a href="https://wa.me/6281262244893" target="_blank" rel="noopener noreferrer" class="inline-block bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-gray-200 transition-colors">
+            <a href="https://wa.me/6281262244893?text=Halo%20Yose!%20Saya%20baru%20saja%20melihat%20portofolio%20kamu%20dan%20tertarik%20untuk%20berdiskusi%20atau%20berkolaborasi." target="_blank" rel="noopener noreferrer" class="inline-block bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-gray-200 transition-colors">
                 Hubungi Disini
             </a>
 
@@ -494,17 +509,22 @@
 
     <script>
         AOS.init({
-            duration: 1000,
+            duration: 700,
             easing: 'ease-out-cubic',
             once: true,
-            offset: 100
+            offset: 60,
+            throttleDelay: 99,
+            debounceDelay: 50
         });
 
         const swiperConfig = {
             grabCursor: true,
             spaceBetween: 24,
+            watchSlidesProgress: true,
+            resistanceRatio: 0.85,
             mousewheel: {
                 forceToAxis: true,
+                releaseOnEdges: true,
             },
             pagination: {
                 el: ".swiper-pagination",
@@ -517,29 +537,28 @@
             }
         };
 
-        const designSwiper = new Swiper('.design-swiper', swiperConfig);
-        const photoSwiper = new Swiper('.photo-swiper', swiperConfig);
+        const designSwiper = new Swiper(".design-swiper", swiperConfig);
+        const photoSwiper = new Swiper(".photo-swiper", swiperConfig);
 
-        function openLightbox(imgSrc, title, desc) {
-            const modal = document.getElementById('lightbox-modal');
-            const img = document.getElementById('lightbox-img');
-            const titleElem = document.getElementById('lightbox-title');
-            const descElem = document.getElementById('lightbox-desc');
+        // Fungsi Lightbox
+        const lightboxModal = document.getElementById('lightbox-modal');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDesc = document.getElementById('lightbox-desc');
 
-            img.src = imgSrc;
-            titleElem.textContent = title;
-            descElem.textContent = desc;
-            modal.scrollTop = 0;
-
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modal.classList.add('opacity-100', 'pointer-events-auto');
+        function openLightbox(imgSrc, title, description) {
+            lightboxImg.src = imgSrc;
+            lightboxTitle.textContent = title;
+            lightboxDesc.textContent = description;
+            lightboxModal.scrollTop = 0;
+            lightboxModal.classList.remove('opacity-0', 'pointer-events-none');
+            lightboxModal.classList.add('opacity-100', 'pointer-events-auto');
             document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
-            const modal = document.getElementById('lightbox-modal');
-            modal.classList.remove('opacity-100', 'pointer-events-auto');
-            modal.classList.add('opacity-0', 'pointer-events-none');
+            lightboxModal.classList.remove('opacity-100', 'pointer-events-auto');
+            lightboxModal.classList.add('opacity-0', 'pointer-events-none');
             document.body.style.overflow = '';
         }
 
@@ -549,29 +568,29 @@
             }
         }
 
-        function closeLightbox() {
-            const modal = document.getElementById('lightbox-modal');
-            modal.classList.remove('opacity-100', 'pointer-events-auto');
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            document.body.style.overflow = 'auto';
-        }
-
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeLightbox();
             }
         });
 
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        let isNavScrolled = false;
+
         window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-[#0a0103]/90', 'shadow-lg');
-                navbar.classList.remove('bg-black/40');
-            } else {
-                navbar.classList.remove('bg-[#0a0103]/90', 'shadow-lg');
-                navbar.classList.add('bg-black/40');
+            const shouldBeScrolled = window.scrollY > 50;
+            if (shouldBeScrolled !== isNavScrolled) {
+                isNavScrolled = shouldBeScrolled;
+                if (isNavScrolled) {
+                    navbar.classList.add('bg-[#0a0103]/90', 'shadow-lg');
+                    navbar.classList.remove('bg-black/40');
+                } else {
+                    navbar.classList.remove('bg-[#0a0103]/90', 'shadow-lg');
+                    navbar.classList.add('bg-black/40');
+                }
             }
-        });
+        }, { passive: true });
     </script>
 </body>
 </html>
